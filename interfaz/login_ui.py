@@ -4,6 +4,14 @@ import tkinter as tk
 from tkinter import messagebox
 from metodos.con_libreria import login_con_libreria
 from interfaz.ver_historial import mostrar_historial
+from metodos.sin_libreria import login_sin_libreria
+
+def login_sin_libreria_ui():
+    try:
+        login_sin_libreria()
+        mostrar_home()
+    except Exception as e:
+        messagebox.showerror("Acceso denegado", str(e))
 
 
 def iniciar_interfaz():
