@@ -6,10 +6,11 @@ import numpy as np
 from datetime import datetime
 import csv
 
-# Utiliza haarcascade preentrenado
+# Cargar Haar Cascade para detectar rostros
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 
 def registrar_historial(usuario, resultado):
+    """Registra en CSV el resultado del intento de acceso."""
     ruta = "resultados/historial_accesos.csv"
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     with open(ruta, mode='a', newline='', encoding='utf-8') as archivo:
@@ -20,6 +21,13 @@ def calcular_histograma(rostro):
     """Devuelve un histograma normalizado del rostro en escala de grises"""
     rostro_gray = cv2.cvtColor(rostro, cv2.COLOR_BGR2GRAY)
     hist = cv2.calcHist([rostro_gray], [0], None, [256], [0, 256])
+    hist = cv2.normalize(hist, hist).flatten()
+    return hist
+
+def calcular_histograma_color(rostro):
+    """Devuelve un histograma normalizado de la imagen en espacio de color HSV"""
+    rostro_hsv = cv2.cvtColor(rostro, cv2.COLOR_BGR2HSV)
+    hist = cv2.calcHist([rostro_hsv], [0, 1], None, [256, 256], [0, 256, 0, 256])
     hist = cv2.normalize(hist, hist).flatten()
     return hist
 
@@ -39,7 +47,9 @@ def cargar_histogramas():
                 x, y, w, h = rostros[0]
                 rostro = imagen[y:y+h, x:x+w]
                 hist = calcular_histograma(rostro)
-                histogramas.append(hist)
+                hist_color = calcular_histograma_color(rostro)
+                # Usamos ambos histogramas para comparación más robusta
+                histogramas.append((hist, hist_color))
                 nombres.append(os.path.splitext(archivo)[0])
             else:
                 print(f"[!] No se detectó rostro en {archivo}")
@@ -68,13 +78,20 @@ def login_sin_libreria():
         for (x, y, w, h) in rostros:
             rostro_capturado = frame[y:y+h, x:x+w]
             hist_capturado = calcular_histograma(rostro_capturado)
+            hist_capturado_color = calcular_histograma_color(rostro_capturado)
 
-            distancias = [cv2.norm(hist_capturado - h, cv2.NORM_L2) for h in histogramas_base]
+            # Comparamos ambos histogramas (luminancia + color)
+            distancias = []
+            for (hist, hist_color) in histogramas_base:
+                dist_hist = cv2.norm(hist_capturado - hist, cv2.NORM_L2)
+                dist_hist_color = cv2.norm(hist_capturado_color - hist_color, cv2.NORM_L2)
+                distancias.append(dist_hist + dist_hist_color)
+
             idx_min = np.argmin(distancias)
             distancia_minima = distancias[idx_min]
 
-            # Umbral ajustable según pruebas
-            if distancia_minima < 0.5:
+            # Ajustamos el umbral según pruebas
+            if distancia_minima < 1.0:  # Umbral de similitud ajustable
                 acceso_concedido = True
                 nombre_detectado = nombres[idx_min]
                 color = (0, 255, 0)

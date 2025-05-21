@@ -7,11 +7,12 @@ from interfaz.ver_historial import mostrar_historial
 from metodos.sin_libreria import login_sin_libreria
 
 def login_sin_libreria_ui():
+    """Inicia login usando nuestra propia implementación de reconocimiento facial."""
     try:
-        login_sin_libreria()
-        mostrar_home()
+        login_sin_libreria()  # Llama la función sin librería
+        mostrar_home()  # Si el acceso es exitoso, muestra la pantalla Home
     except Exception as e:
-        messagebox.showerror("Acceso denegado", str(e))
+        messagebox.showerror("Acceso denegado", f"Ocurrió un error: {e}")
 
 
 def iniciar_interfaz():
@@ -31,7 +32,7 @@ def iniciar_interfaz():
 
     btn_login_con_libreria = tk.Button(
         ventana,
-        text="Login con Librer\u00eda",
+        text="Login con Librería",
         width=25,
         height=2,
         command=login_con_libreria_ui,
@@ -51,7 +52,7 @@ def iniciar_interfaz():
 
     btn_login_sin_libreria = tk.Button(
         ventana,
-        text="Login sin Librer\u00eda",
+        text="Login sin Librería",
         width=25,
         height=2,
         command=login_sin_libreria_ui,
@@ -87,26 +88,28 @@ def iniciar_interfaz():
     btn_historial.bind("<Enter>", lambda e: btn_historial.config(bg="#546e7a"))
     btn_historial.bind("<Leave>", lambda e: btn_historial.config(bg="#607d8b"))
 
-
     ventana.mainloop()
 
 
 def login_con_libreria_ui():
     try:
-        login_con_libreria()
-        mostrar_home()
+        login_con_libreria()  # Llama la función con librería
+        mostrar_home()  # Si el acceso es exitoso, muestra la pantalla Home
     except Exception as e:
-        messagebox.showerror("Error", f"Ocurri\u00f3 un error: {e}")
+        messagebox.showerror("Error", f"Ocurrió un error: {e}")
 
 
 def login_sin_libreria_ui():
+    """Inicia login usando nuestra propia implementación de reconocimiento facial."""
     try:
-        messagebox.showinfo("En desarrollo", "Login sin librer\u00eda a\u00fan no implementado.")
+        login_sin_libreria()  # Llama la función sin librería
+        mostrar_home()  # Si el acceso es exitoso, muestra la pantalla Home
     except Exception as e:
-        messagebox.showerror("Error", f"Ocurri\u00f3 un error: {e}")
+        messagebox.showerror("Error", f"Ocurrió un error: {e}")
 
 
 def mostrar_home():
+    """Pantalla Mock de Home después de login exitoso."""
     ventana_home = tk.Toplevel()
     ventana_home.title("Inicio")
     ventana_home.geometry("300x200")
@@ -114,7 +117,7 @@ def mostrar_home():
 
     label_home = tk.Label(
         ventana_home,
-        text="\u00a1Login exitoso!",
+        text="¡Login exitoso!",
         font=("Helvetica", 16, "bold"),
         bg="#ffffff",
         fg="#4CAF50"
