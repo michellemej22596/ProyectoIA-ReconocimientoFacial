@@ -3,6 +3,7 @@
 import cv2
 import face_recognition
 import os
+import time  # Para medir el tiempo de ejecución
 
 from datetime import datetime
 import csv
@@ -107,9 +108,41 @@ def reconocer_usuario(lista_encodings, lista_nombres):
 def login_con_libreria():
     """Función principal para usar el sistema de login facial con face_recognition."""
     try:
+        start_time = time.time()  # Inicia el conteo del tiempo
+
         encodings, nombres = cargar_todos_los_usuarios()
         if not encodings:
             raise Exception("No hay usuarios registrados con rostros válidos.")
-        reconocer_usuario(encodings, nombres)
+        
+        reconocer_usuario(encodings, nombres)  # Llama a la función de reconocimiento de usuario
+
+        end_time = time.time()  # Finaliza el conteo del tiempo
+        elapsed_time = end_time - start_time  # Calcula el tiempo transcurrido
+        
+        # Imprimir el tiempo en la consola
+        print(f"[INFO] Tiempo de ejecución con librería: {elapsed_time:.4f} segundos")
+
+        # Aquí también puedes guardar los resultados del rendimiento en un archivo CSV
+        guardar_resultados_rendimiento("Con librería", elapsed_time)
     except Exception as e:
         print(f"Error en el login con librería: {e}")
+
+
+def guardar_resultados_rendimiento(metodo, tiempo):
+    """Guarda los resultados de la medición de rendimiento en un archivo CSV."""
+    ruta = "resultados/comparacion_rendimiento.csv"
+    
+    try:
+        with open(ruta, mode='a', newline='', encoding='utf-8') as archivo:
+            escritor = csv.writer(archivo)
+            
+            # Si el archivo está vacío, escribir el encabezado
+            if archivo.tell() == 0:
+                escritor.writerow(["Método", "Tiempo de ejecución (segundos)"])
+            
+            # Escribir los resultados de ambos métodos
+            escritor.writerow([metodo, tiempo])
+
+        print(f"[INFO] Resultados guardados en: {ruta}")
+    except Exception as e:
+        print(f"[ERROR] No se pudo guardar el archivo de resultados: {e}")

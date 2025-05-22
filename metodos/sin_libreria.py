@@ -5,6 +5,7 @@ import os
 import numpy as np
 from datetime import datetime
 import csv
+import time  # Para medir el rendimiento
 
 # Cargar Haar Cascade para detectar rostros
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
@@ -64,9 +65,16 @@ def login_sin_libreria():
         return
 
     cam = cv2.VideoCapture(0)
+    if not cam.isOpened():
+        print("[ERROR] No se pudo abrir la cámara.")
+        return
+
     acceso_concedido = False
     nombre_detectado = "Desconocido"
     umbral_similitud = 1.0  # Puedes ajustar este valor según lo necesites
+
+    # Iniciar el conteo de tiempo
+    start_time = time.time()
 
     while True:
         ret, frame = cam.read()
@@ -112,8 +120,35 @@ def login_sin_libreria():
     cam.release()
     cv2.destroyAllWindows()
 
+    # Finalizar el conteo de tiempo
+    end_time = time.time()
+    elapsed_time = end_time - start_time  # Calcula el tiempo total de ejecución
+    print(f"[INFO] Tiempo de ejecución sin librería: {elapsed_time:.4f} segundos")  # Muestra el tiempo en la consola
+
+    # Guardar el rendimiento en un archivo CSV
+    guardar_resultados_rendimiento("Sin librería", elapsed_time)
+
     if acceso_concedido:
         registrar_historial(nombre_detectado, "Permitido")
     else:
         registrar_historial("Desconocido", "Denegado")
         raise Exception("Acceso no permitido")
+
+def guardar_resultados_rendimiento(metodo, tiempo):
+    """Guarda los resultados de la medición de rendimiento en un archivo CSV."""
+    ruta = "resultados/comparacion_rendimiento.csv"
+    
+    try:
+        with open(ruta, mode='a', newline='', encoding='utf-8') as archivo:
+            escritor = csv.writer(archivo)
+            
+            # Si el archivo está vacío, escribir el encabezado
+            if archivo.tell() == 0:
+                escritor.writerow(["Método", "Tiempo de ejecución (segundos)"])
+            
+            # Escribir los resultados de ambos métodos
+            escritor.writerow([metodo, tiempo])
+
+        print(f"[INFO] Resultados guardados en: {ruta}")
+    except Exception as e:
+        print(f"[ERROR] No se pudo guardar el archivo de resultados: {e}")  
