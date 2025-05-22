@@ -66,6 +66,7 @@ def login_sin_libreria():
     cam = cv2.VideoCapture(0)
     acceso_concedido = False
     nombre_detectado = "Desconocido"
+    umbral_similitud = 1.0  # Puedes ajustar este valor según lo necesites
 
     while True:
         ret, frame = cam.read()
@@ -91,7 +92,7 @@ def login_sin_libreria():
             distancia_minima = distancias[idx_min]
 
             # Ajustamos el umbral según pruebas
-            if distancia_minima < 1.0:  # Umbral de similitud ajustable
+            if distancia_minima < umbral_similitud:  # Umbral de similitud ajustable
                 acceso_concedido = True
                 nombre_detectado = nombres[idx_min]
                 color = (0, 255, 0)

@@ -5,6 +5,7 @@ from tkinter import messagebox
 from metodos.con_libreria import login_con_libreria
 from interfaz.ver_historial import mostrar_historial
 from metodos.sin_libreria import login_sin_libreria
+from interfaz.registro_ui import iniciar_registro_ui  # Importamos la función de registro
 
 def login_sin_libreria_ui():
     """Inicia login usando nuestra propia implementación de reconocimiento facial."""
@@ -69,6 +70,26 @@ def iniciar_interfaz():
     btn_login_sin_libreria.bind("<Enter>", lambda e: btn_login_sin_libreria.config(bg="#1e88e5"))
     btn_login_sin_libreria.bind("<Leave>", lambda e: btn_login_sin_libreria.config(bg="#2196F3"))
 
+    # Añadir el botón de Registro
+    btn_registrar_usuario = tk.Button(
+        ventana,
+        text="Registrar Nuevo Usuario",
+        width=25,
+        height=2,
+        command=iniciar_registro_ui,  # Abre la ventana de registro
+        bg="#FFC107",
+        fg="white",
+        activebackground="#FFB300",
+        bd=0,
+        relief="flat",
+        font=("Helvetica", 10, "bold")
+    )
+    btn_registrar_usuario.pack(pady=10)
+    btn_registrar_usuario.configure(cursor="hand2")
+
+    btn_registrar_usuario.bind("<Enter>", lambda e: btn_registrar_usuario.config(bg="#FFB300"))
+    btn_registrar_usuario.bind("<Leave>", lambda e: btn_registrar_usuario.config(bg="#FFC107"))
+
     btn_historial = tk.Button(
         ventana,
         text="Ver historial de accesos",
@@ -94,15 +115,6 @@ def iniciar_interfaz():
 def login_con_libreria_ui():
     try:
         login_con_libreria()  # Llama la función con librería
-        mostrar_home()  # Si el acceso es exitoso, muestra la pantalla Home
-    except Exception as e:
-        messagebox.showerror("Error", f"Ocurrió un error: {e}")
-
-
-def login_sin_libreria_ui():
-    """Inicia login usando nuestra propia implementación de reconocimiento facial."""
-    try:
-        login_sin_libreria()  # Llama la función sin librería
         mostrar_home()  # Si el acceso es exitoso, muestra la pantalla Home
     except Exception as e:
         messagebox.showerror("Error", f"Ocurrió un error: {e}")
