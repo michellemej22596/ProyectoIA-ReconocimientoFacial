@@ -1,11 +1,11 @@
-# interfaz/login_ui.py
-
 import tkinter as tk
 from tkinter import messagebox
 from metodos.con_libreria import login_con_libreria
-from interfaz.ver_historial import mostrar_historial
 from metodos.sin_libreria import login_sin_libreria
-from interfaz.registro_ui import iniciar_registro_ui  # Importamos la función de registro
+from interfaz.registro_ui import iniciar_registro_ui
+import tkinter.font as tkFont
+from interfaz.ver_historial import mostrar_historial
+
 
 def login_sin_libreria_ui():
     """Inicia login usando nuestra propia implementación de reconocimiento facial."""
@@ -31,65 +31,62 @@ def iniciar_interfaz():
     )
     label_bienvenida.pack(pady=20)
 
+    # Establecemos la fuente personalizada
+    fuente_boton = tkFont.Font(family="Segoe UI", size=10)
+
+    # Frame para los botones de login
+    frame_boton = tk.Frame(ventana, bg="#f0f2f5")
+    frame_boton.pack(pady=30)
+
+    # Botón para login con librería
     btn_login_con_libreria = tk.Button(
-        ventana,
+        frame_boton,
         text="Login con Librería",
-        width=25,
+        width=15,
         height=2,
         command=login_con_libreria_ui,
-        bg="#4CAF50",
+        bg="#6BACC5",
         fg="white",
-        activebackground="#45a049",
+        activebackground="#6BACC5",
         bd=0,
         relief="flat",
-        font=("Helvetica", 10, "bold")
+        font=fuente_boton
     )
-    btn_login_con_libreria.pack(pady=10)
-    btn_login_con_libreria.configure(highlightbackground="#4CAF50")
-    btn_login_con_libreria.configure(cursor="hand2")
+    btn_login_con_libreria.grid(row=0, column=0, padx=5, pady=5)
 
-    btn_login_con_libreria.bind("<Enter>", lambda e: btn_login_con_libreria.config(bg="#45a049"))
-    btn_login_con_libreria.bind("<Leave>", lambda e: btn_login_con_libreria.config(bg="#4CAF50"))
-
+    # Botón para login sin librería
     btn_login_sin_libreria = tk.Button(
-        ventana,
+        frame_boton,
         text="Login sin Librería",
-        width=25,
+        width=15,
         height=2,
         command=login_sin_libreria_ui,
-        bg="#2196F3",
+        bg="#6BACC5",
         fg="white",
-        activebackground="#1e88e5",
+        activebackground="#6BACC5",
         bd=0,
         relief="flat",
-        font=("Helvetica", 10, "bold")
+        font=fuente_boton
     )
-    btn_login_sin_libreria.pack(pady=10)
-    btn_login_sin_libreria.configure(cursor="hand2")
+    btn_login_sin_libreria.grid(row=0, column=1, padx=5, pady=5)
 
-    btn_login_sin_libreria.bind("<Enter>", lambda e: btn_login_sin_libreria.config(bg="#1e88e5"))
-    btn_login_sin_libreria.bind("<Leave>", lambda e: btn_login_sin_libreria.config(bg="#2196F3"))
-
-    # Añadir el botón de Registro
+    # Botón de registro de usuario
     btn_registrar_usuario = tk.Button(
         ventana,
         text="Registrar Nuevo Usuario",
         width=25,
         height=2,
         command=iniciar_registro_ui,  # Abre la ventana de registro
-        bg="#FFC107",
+        bg="#6C9CC0",
         fg="white",
-        activebackground="#FFB300",
+        activebackground="#5972B1",
         bd=0,
         relief="flat",
         font=("Helvetica", 10, "bold")
     )
     btn_registrar_usuario.pack(pady=10)
-    btn_registrar_usuario.configure(cursor="hand2")
 
-    btn_registrar_usuario.bind("<Enter>", lambda e: btn_registrar_usuario.config(bg="#FFB300"))
-    btn_registrar_usuario.bind("<Leave>", lambda e: btn_registrar_usuario.config(bg="#FFC107"))
-
+    # Botón de ver historial de accesos
     btn_historial = tk.Button(
         ventana,
         text="Ver historial de accesos",
@@ -104,10 +101,6 @@ def iniciar_interfaz():
         font=("Helvetica", 10, "bold")
     )
     btn_historial.pack(side="bottom", pady=10)
-    btn_historial.configure(cursor="hand2")
-
-    btn_historial.bind("<Enter>", lambda e: btn_historial.config(bg="#546e7a"))
-    btn_historial.bind("<Leave>", lambda e: btn_historial.config(bg="#607d8b"))
 
     ventana.mainloop()
 
