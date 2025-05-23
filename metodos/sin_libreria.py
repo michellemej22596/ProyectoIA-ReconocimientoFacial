@@ -76,6 +76,8 @@ def login_sin_libreria():
     # Iniciar el conteo de tiempo
     start_time = time.time()
 
+    frame_count = 0  # Inicializa el contador de fotogramas
+
     while True:
         ret, frame = cam.read()
         if not ret:
@@ -112,6 +114,14 @@ def login_sin_libreria():
 
             break  # solo consideramos el primer rostro detectado
 
+        # Calcular FPS
+        frame_count += 1  # Incrementar el contador de fotogramas
+        elapsed_time = time.time() - start_time
+        fps = frame_count / elapsed_time  # FPS calculado
+
+        # Mostrar FPS en la pantalla
+        cv2.putText(frame, f"FPS: {fps:.2f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 2)
+
         cv2.imshow("Login sin Librería", frame)
 
         if acceso_concedido or (cv2.waitKey(1) & 0xFF == ord('q')):
@@ -134,6 +144,14 @@ def login_sin_libreria():
         registrar_historial("Desconocido", "Denegado")
         raise Exception("Acceso no permitido")
 
+    # Finalizar el conteo de tiempo
+    end_time = time.time()
+    elapsed_time = end_time - start_time  # Calcula el tiempo total de ejecución
+    print(f"[INFO] Tiempo de ejecución sin librería: {elapsed_time:.4f} segundos")  # Muestra el tiempo en la consola
+
+    # Guardar el rendimiento en un archivo CSV
+    guardar_resultados_rendimiento("Sin librería", elapsed_time)
+
 def guardar_resultados_rendimiento(metodo, tiempo):
     """Guarda los resultados de la medición de rendimiento en un archivo CSV."""
     ruta = "resultados/comparacion_rendimiento.csv"
@@ -151,4 +169,4 @@ def guardar_resultados_rendimiento(metodo, tiempo):
 
         print(f"[INFO] Resultados guardados en: {ruta}")
     except Exception as e:
-        print(f"[ERROR] No se pudo guardar el archivo de resultados: {e}")  
+        print(f"[ERROR] No se pudo guardar el archivo de resultados: {e}")

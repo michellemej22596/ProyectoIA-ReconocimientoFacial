@@ -59,50 +59,71 @@ def reconocer_usuario(lista_encodings, lista_nombres):
     acceso_concedido = False
     nombre_detectado = "Desconocido"
 
-    while True:
-        ret, frame = video.read()
-        if not ret:
-            continue
+    # Aseguramos que la cámara se abre solo una vez
+    if not video.isOpened():
+        print("[ERROR] No se pudo abrir la cámara.")
+        return
 
-        small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
-        rgb_small_frame = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)
+    # Empezamos a medir el tiempo justo después de abrir la cámara
+    start_time = time.time()  # Aquí es donde empieza a medirse el rendimiento
 
-        face_locations = face_recognition.face_locations(rgb_small_frame)
-        face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations) if face_locations else []
+    # Banderas para controlar la ejecución
+    if not hasattr(reconocer_usuario, "executed"):
+        reconocer_usuario.executed = True  # Marca que ya fue ejecutada
 
-        for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
-            matches = face_recognition.compare_faces(lista_encodings, face_encoding)
-            name = "Desconocido"
+        while True:
+            ret, frame = video.read()
+            if not ret:
+                continue
 
-            if True in matches:
-                match_index = matches.index(True)
-                name = lista_nombres[match_index]
-                acceso_concedido = True
-                nombre_detectado = name
+            small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+            rgb_small_frame = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)
 
-            top, right, bottom, left = top*4, right*4, bottom*4, left*4
-            color = (0, 255, 0) if acceso_concedido else (0, 0, 255)
+            face_locations = face_recognition.face_locations(rgb_small_frame)
+            face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations) if face_locations else []
 
-            cv2.rectangle(frame, (left, top), (right, bottom), color, 2)
-            cv2.putText(frame, name, (left, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 255, 255), 2)
+            for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
+                matches = face_recognition.compare_faces(lista_encodings, face_encoding)
+                name = "Desconocido"
 
-            if acceso_concedido:
+                if True in matches:
+                    match_index = matches.index(True)
+                    name = lista_nombres[match_index]
+                    acceso_concedido = True
+                    nombre_detectado = name
+
+                top, right, bottom, left = top*4, right*4, bottom*4, left*4
+                color = (0, 255, 0) if acceso_concedido else (0, 0, 255)
+
+                cv2.rectangle(frame, (left, top), (right, bottom), color, 2)
+                cv2.putText(frame, name, (left, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 255, 255), 2)
+
+                if acceso_concedido:
+                    break
+
+            cv2.imshow('Reconocimiento Facial - face_recognition', frame)
+
+            if acceso_concedido or (cv2.waitKey(1) & 0xFF == ord('q')):
                 break
 
-        cv2.imshow('Reconocimiento Facial - face_recognition', frame)
+        video.release()
+        cv2.destroyAllWindows()
 
-        if acceso_concedido or (cv2.waitKey(1) & 0xFF == ord('q')):
-            break
+        # Finaliza el conteo del tiempo
+        end_time = time.time()
+        elapsed_time = end_time - start_time  # Calcula el tiempo total de ejecución
 
-    video.release()
-    cv2.destroyAllWindows()
+        print(f"[INFO] Tiempo de ejecución con librería: {elapsed_time:.4f} segundos")  # Muestra el tiempo en la consola
 
-    # Registrar resultado
-    if acceso_concedido:
-        registrar_historial(nombre_detectado, "Permitido")
-    else:
-        registrar_historial("Desconocido", "Denegado")
-        raise Exception("Acceso no permitido")
+        # Guardar el rendimiento en un archivo CSV
+        guardar_resultados_rendimiento("Con librería", elapsed_time)
+
+        # Registrar resultado
+        if acceso_concedido:
+            registrar_historial(nombre_detectado, "Permitido")
+        else:
+            registrar_historial("Desconocido", "Denegado")
+            raise Exception("Acceso no permitido")
 
 
 def login_con_libreria():
