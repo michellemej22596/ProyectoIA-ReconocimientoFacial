@@ -1,8 +1,13 @@
-````markdown
 # Proyecto IA - Reconocimiento Facial
 Michelle Mejía 22596 - Silvia Illescas 22376
 
 Este proyecto implementa un sistema de **reconocimiento facial** utilizando las librerías `face_recognition` para el reconocimiento avanzado y `Tkinter` para la interfaz gráfica. El sistema permite registrar usuarios, autenticar mediante el rostro y registrar el historial de accesos. Además, incluye un análisis de rendimiento al comparar el uso de la librería `face_recognition` contra una implementación manual de comparación de rostros sin librerías.
+
+
+## Video de Funcionamiento
+https://www.canva.com/design/DAGoTFuzZpU/CPkwhIVU4YG9b-flCU6-AA/view?utm_content=DAGoTFuzZpU&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=ha4336d1be0
+
+
 
 ## Requisitos
 
