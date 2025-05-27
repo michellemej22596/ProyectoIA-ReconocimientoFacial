@@ -5,8 +5,10 @@ Este proyecto implementa un sistema de **reconocimiento facial** utilizando las 
 
 
 ## Video de Funcionamiento
-https://www.canva.com/design/DAGoTFuzZpU/CPkwhIVU4YG9b-flCU6-AA/view?utm_content=DAGoTFuzZpU&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=ha4336d1be0
+https://www.youtube.com/watch?v=d9UDUaWrNL8
 
+## Presentación y Slides
+https://www.canva.com/design/DAGoTFuzZpU/CPkwhIVU4YG9b-flCU6-AA/view?utm_content=DAGoTFuzZpU&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=ha4336d1be0
 
 
 ## Requisitos
